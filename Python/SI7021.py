@@ -13,28 +13,21 @@ import time
 bus = smbus.SMBus(1)
 
 # SI7021 address, 0x40(64)
-#		0xF5(245)	Select Relative Humidity NO HOLD master mode
-bus.write_byte(0x40, 0xF5)
-
+# Read data, 2 bytes, Humidity MSB first
+rh = bus.read_i2c_block_data(0x40, 0xE5, 2) 
+#what really happens here is that master sends a 0xE5 command (measure RH, hold master mode) and read 2 bytes back
+#if you read 3 bytes the last one is the CRC!
 time.sleep(0.1)
-
-# SI7021 address, 0x40(64)
-# Read data back, 2 bytes, Humidity MSB first
-rh = bus.read_i2c_block_data(0x40, 0xE1, 2)
-
 # Convert the data
 humidity = ((rh[0] * 256 + rh[1]) * 125 / 65536.0) - 6
 
 
 # SI7021 address, 0x40(64)
-#		0xF3(243)	Select temperature NO HOLD master mode
-bus.write_byte(0x40, 0xF3)
+# Read data , 2 bytes, Temperature MSB first
+temp = bus.read_i2c_block_data(0x40, 0xE3,2)
+#what really happens here is that master sends a 0xE3 command (measure temperature, hold master mode) and read 2 bytes back 
+#if you read 3 bytes the last one is the CRC!
 time.sleep(0.1)
-
-# SI7021 address, 0x40(64)
-# Read data back, 2 bytes, Temperature MSB first
-temp = bus.read_i2c_block_data(0x40, 0xE0,2)
-
 
 # Convert the data
 cTemp = ((temp[0] * 256 + temp[1]) * 175.72 / 65536.0) - 46.85
@@ -42,6 +35,6 @@ fTemp = cTemp * 1.8 + 32
 
 # Output data to screen
 
-print ("Umidità %%RH: %.2f%%" %humidity)
-print ("Temperatura Celsius: %.2f°C" %cTemp)
-print ("Temperatura Fahrenheit: %.2f°F" %fTemp)
+print ("Humidity %%RH: %.2f%%" %humidity)
+print ("Temperature Celsius: %.2f°C" %cTemp)
+print ("Temperature Fahrenheit: %.2f°F" %fTemp)
