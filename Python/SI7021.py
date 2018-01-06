@@ -1,4 +1,5 @@
 # Distributed with a free-will license.
+# -*- coding: utf-8 -*-, 
 # Use it any way you want, profit or free, provided it fits in the licenses of its associated works.
 # SI7021
 # This code is designed to work with the SI7021_I2CS I2C Mini Module available from ControlEverything.com.
